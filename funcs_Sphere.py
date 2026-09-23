@@ -11,6 +11,7 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import torch
 
+
 def gen_intervals(ts_final,N_steps, ts_min=0.4):
     '''
     Generates time intervals for training schedule, from faster to slower intervals
@@ -34,6 +35,7 @@ def gen_intervals(ts_final,N_steps, ts_min=0.4):
     for i in range(N_steps):
         Tss[:,i] = stp_pr[i]*ts_final
     return(Tss)
+
 
 def set_plot(ll = 7):
     '''
@@ -113,6 +115,7 @@ def set_plot(ll = 7):
         clS[4,:] = cl22    
     return(clS)
 
+
 def fromSigma_to_BigSigma(sigma_mn, sigma_m):
     '''
     Generates the 2Rx2R covariance matrix of the loadings based on the 
@@ -147,6 +150,7 @@ def fromSigma_to_BigSigma(sigma_mn, sigma_m):
         ite +=1
     bigSigma[dims:, dims:] = 1.01*bigSigma[dims:, dims:]
     return(bigSigma)
+
 
 def initialize_sphere(hidden_size, s_mn=2, Delta=0.01, do=0.1, sm = 1.,dims=3, Delta2=np.nan, run_mat = 100):
     sigma_mn = s_mn*np.eye(dims)
@@ -183,6 +187,7 @@ def initialize_sphere(hidden_size, s_mn=2, Delta=0.01, do=0.1, sm = 1.,dims=3, D
     J = np.dot(M, N.T)/hidden_size
     
     return(sigma_mn, sigma_m, J, M, N, err_min, bigSigma, np.cov(X.T))
+
 
 def give_manif(theta, phi, rs, E, UX, En, UXn):
     np.seterr(divide='ignore', invalid='ignore')
@@ -248,6 +253,7 @@ def give_manif(theta, phi, rs, E, UX, En, UXn):
             V_manif_net[it, ip] = np.sum(vec*vec_phi)
     return(E_manif, R_manif, U_manif, V_manif, E_manif_net, R_manif_net, U_manif_net, V_manif_net)
 
+
 def give_manif_Inp(theta, phi, rs, En, UXn):
     np.seterr(divide='ignore', invalid='ignore')
     
@@ -308,6 +314,7 @@ def give_manif_Inp(theta, phi, rs, En, UXn):
             V_manif_net[it, ip] = np.sum(vec*vec_phi)
     return( E_manif_net, R_manif_net, U_manif_net, V_manif_net)
 
+
 def give_fieldsMF2D(rs, theta, phi, sigma_mn, sigma_m, sigma_nI = None, sigma_I = None, verbose = False, vm = -5):
     E = np.zeros((len(rs), len(phi)))
     UX = np.zeros((len(rs), len(phi), 3))
@@ -327,6 +334,7 @@ def give_fieldsMF2D(rs, theta, phi, sigma_mn, sigma_m, sigma_nI = None, sigma_I 
                 UX[ir, ip,:], E[ir, ip] =  def_fieldInp(k0, sigma_mn, sigma_m, sigma_nI, sigma_I)
     return(UX, E)
 
+
 def give_fieldsMF2Dhor(rs, theta, sigma_mn, sigma_m, sigma_nI = None, sigma_I = None, verbose = False, vm = -5):
     E = np.zeros((len(rs), len(theta)))
     UX = np.zeros((len(rs), len(theta), 3))
@@ -345,6 +353,7 @@ def give_fieldsMF2Dhor(rs, theta, sigma_mn, sigma_m, sigma_nI = None, sigma_I = 
                 UX[ir, it,:], E[ir, it] =  def_fieldInp(k0, sigma_mn, sigma_m, sigma_nI, sigma_I)
     return(UX, E)
 
+
 def give_fields(rs, theta, sigma_mn, sigma_m, sigma_nI = None, sigma_I = None, verbose = False, vm = -5):
     E = np.zeros((len(rs), len(theta)))
     UX = np.zeros((len(rs), len(theta), 3))
@@ -362,6 +371,7 @@ def give_fields(rs, theta, sigma_mn, sigma_m, sigma_nI = None, sigma_I = None, v
             else:
                 UX[ir, it,:], E[ir, it] =  def_fieldInp(k0, sigma_mn, sigma_m, sigma_nI, sigma_I)
     return(UX, E)
+
 
 def give_manif2D(theta, phi, rs, E, UX):
     np.seterr(divide='ignore', invalid='ignore')
@@ -394,8 +404,8 @@ def give_manif2D(theta, phi, rs, E, UX):
         U_manif[ ip] =np.sum(vec*vec_theta)  
         V_manif[ ip] = np.sum(vec*vec_phi)
         
-        
     return(E_manif, R_manif, U_manif, V_manif)
+
 
 def give_manif2Dhor(theta, rs, E, UX):
     np.seterr(divide='ignore', invalid='ignore')
@@ -404,8 +414,6 @@ def give_manif2Dhor(theta, rs, E, UX):
     V_manif = np.zeros_like(E_manif)
     R_manif = np.zeros_like(E_manif)
     
-   
-
     for it , th in enumerate(theta):
         ix = np.argmin(E[:, it])
         R = rs[ix]
@@ -428,8 +436,9 @@ def give_manif2Dhor(theta, rs, E, UX):
         U_manif[ it] =np.sum(vec*vec_theta)  
         V_manif[ it] = np.sum(vec*vec_phi)
         
-        
     return(E_manif, R_manif, U_manif, V_manif)
+
+
 def give_manifMF(theta, phi, rs, E, UX):
     np.seterr(divide='ignore', invalid='ignore')
     E_manif = np.zeros((len(theta), len(phi)))
@@ -472,12 +481,14 @@ def def_field(k0, sigma_mn, sigma_m):
     E = np.sum(sol**2)
     return(sol, E)
 
+
 def def_fieldInp(k0, sigma_mn, sigma_m, sigma_nI, sigma_I):
     delta = np.sum((k0*sigma_m)**2)+sigma_I**2
     prim = Prime(0,delta)
     sol = -k0 + prim*(np.dot(sigma_mn, k0)+sigma_nI)
     E = np.sum(sol**2)
     return(sol, E)
+
 
 def def_field_net(k0, M, N):    
     sol = -k0 
@@ -487,6 +498,7 @@ def def_field_net(k0, M, N):
 
     E = np.sqrt(np.sum(sol**2))
     return(sol, E)
+
 
 def give_fields_Inp(rs, theta, phi, M, N, I, verbose = False, vm = -5):
     
@@ -502,6 +514,7 @@ def give_fields_Inp(rs, theta, phi, M, N, I, verbose = False, vm = -5):
                 k0 = r*np.array((np.sin(p)*np.cos(th), np.sin(p)*np.sin(th), np.cos(p) ))
                 UXn[ir, it, ip,:], En[ir, it, ip] =  def_field_net_Inp(k0, M, N,I)
     return( UXn, En)
+
 
 def give_fields(rs, theta, phi, M, N, sigma_mn, sigma_m, verbose = False, vm = -5):
     E = np.zeros((len(rs), len(theta), len(phi)))
@@ -522,8 +535,6 @@ def give_fields(rs, theta, phi, M, N, sigma_mn, sigma_m, verbose = False, vm = -
     return(UX, E, UXn, En)
 
 
-
-
 def give_fieldsMF(rs, theta, phi, sigma_mn, sigma_m, sigma_nI = None, sigma_I = None, verbose = False, vm = -5):
     E = np.zeros((len(rs), len(theta), len(phi)))
     UX = np.zeros((len(rs), len(theta), len(phi), 3))
@@ -542,6 +553,7 @@ def give_fieldsMF(rs, theta, phi, sigma_mn, sigma_m, sigma_nI = None, sigma_I = 
                     UX[ir, it, ip,:], E[ir, it, ip] =  def_fieldInp(k0, sigma_mn, sigma_m, sigma_nI, sigma_I)
     return(UX, E)
 
+
 def give_fieldsMF_cart(xs, ys, zs, sigma_mn, sigma_m, sigma_nI = None, sigma_I = None, verbose = False, vm = -5):
     E = np.zeros((len(xs), len(ys), len(zs)))
     UX = np.zeros((len(xs), len(ys), len(zs), 3))
@@ -555,6 +567,7 @@ def give_fieldsMF_cart(xs, ys, zs, sigma_mn, sigma_m, sigma_nI = None, sigma_I =
                 else:
                     UX[ix, iy, iz,:], E[ix, iy, iz] =  def_fieldInp(k0, sigma_mn, sigma_m, sigma_nI, sigma_I)
     return(UX, E)
+
 
 def run_randtraj_mf(sigma_mn, sigma_m, T = 80, dt = 0.2, trajs=20):
     dims = len(sigma_m)
@@ -576,6 +589,7 @@ def run_randtraj_mf(sigma_mn, sigma_m, T = 80, dt = 0.2, trajs=20):
     ax.set_zlabel(r'$\kappa_3$')
     
     return(fig, ax)
+
 
 def run_randtraj_mf_all(sigma_mn, sigma_m, T = 80, dt = 0.2, trajs=20):
     dims = len(sigma_m)
@@ -616,6 +630,7 @@ def run_randtraj_mf_all(sigma_mn, sigma_m, T = 80, dt = 0.2, trajs=20):
     
     return(fig, ax, Trajs, Times, iTimes, time)
 
+
 def run_randtraj_fs(M, N, T = 80, dt = 0.2, trajs=20):
     dims = np.shape(M)[1]
     fig = plt.figure()
@@ -636,6 +651,7 @@ def run_randtraj_fs(M, N, T = 80, dt = 0.2, trajs=20):
     ax.set_zlabel(r'$\kappa_3$')
     
     return(fig, ax)
+
 
 def run_randtraj_fs_all(M, N, T = 80, dt = 0.2, trajs=20, lw=2):
     dims = np.shape(M)[1]
@@ -674,6 +690,7 @@ def run_randtraj_fs_all(M, N, T = 80, dt = 0.2, trajs=20, lw=2):
     ax.set_zlabel(r'$\kappa_3$')
     
     return(fig, ax, Trajs, Times, iTimes, time)
+
 
 def def_field_net_Inp(k0, M, N, I):    
     sol = -k0 
@@ -722,6 +739,8 @@ def run_randtraj_fs_all_Inp(M, N, I, T = 80, dt = 0.2, trajs=20):
     ax.set_zlabel(r'$\kappa_3$')
     
     return(fig, ax, Trajs, Times, iTimes, time)
+
+
 def run_FP_fs(M, N, T = 180, dt = 0.2, trajs=1):
     dims = np.shape(M)[1]
     time = np.arange(0, T, dt)
@@ -733,9 +752,8 @@ def run_FP_fs(M, N, T = 180, dt = 0.2, trajs=1):
         for it, ti in enumerate(time[:-1]):
             ks[:,it+1] = ks[:,it] + dt*(def_field_net(ks[:,it], M, N))[0]
         
-    
     return( np.dot(M,ks[:,-1]),ks[:,-1])
-    
+
 
 def plot_field(E_manif_net, En, U_manif_net, V_manif_net, theta, phi, rs, lw=1, 
                cb=True, alpha = 1, s_fp = 70, vmin = -5, vmax = -1, flow=True, density=1., log=True):
@@ -769,6 +787,7 @@ def plot_field(E_manif_net, En, U_manif_net, V_manif_net, theta, phi, rs, lw=1,
     
     return(fig, ax)
 
+
 def initialize_patterns(M,N, input_size, output_size):
     hidden_size = np.shape(M)[0]
     rank = np.shape(M)[1]
@@ -798,16 +817,21 @@ def initialize_patterns(M,N, input_size, output_size):
     out_I = torch.from_numpy(out_i).type(dtype)
     return(mrec_I, nrec_I, inp_I,out_I)
 
+
 gaussian_norm = (1/np.sqrt(np.pi))
 gauss_points, gauss_weights = np.polynomial.hermite.hermgauss(200)
 gauss_points = gauss_points*np.sqrt(2)
 
+
 def Phi (mu, delta0):
     integrand = np.tanh(mu+np.sqrt(delta0)*gauss_points)
     return gaussian_norm * np.dot (integrand,gauss_weights)
+
+
 def Prime (mu, delta0):
     integrand = 1 - (np.tanh(mu+np.sqrt(delta0)*gauss_points))**2
     return gaussian_norm * np.dot (integrand,gauss_weights)
+
 
 def get_weights(net_low):
     M = net_low.m.detach().numpy()
@@ -816,6 +840,7 @@ def get_weights(net_low):
     I = net_low.wi.detach().numpy()
     O = net_low.wo.detach().numpy()
     return(M, N, corr, I, O)
+
 
 def get_SVDweights(net_low, rank=3):
     M = net_low.m.detach().numpy()
@@ -828,6 +853,7 @@ def get_SVDweights(net_low, rank=3):
     corr_pre = np.dot(M_pre.T, N_pre)
     return(M_pre, N_pre, corr_pre, J_pre)
 
+
 def get_SVD_MN(M, N):
     rank = np.shape(M)[1]
     hidden_size = np.shape(M)[0]
@@ -838,8 +864,12 @@ def get_SVD_MN(M, N):
     return(M_pre, N_pre, J_pre)
 
 
-
 def get_SVDweights_CSG(net_low, rank=3):
+    """
+    Get the SVD of the low-rank connectivity matrix J = M N^T of a trained network.
+    Returns the SVD components M_pre, N_pre, and the correlation matrix corr_pre.
+    Also returns the input and output weights I and O, as well as the pre-SVD connectivity matrix J_pre.
+    """
     M = net_low.m.detach().numpy()
     N = net_low.n.detach().numpy()
     
@@ -851,6 +881,7 @@ def get_SVDweights_CSG(net_low, rank=3):
     I = net_low.wi.detach().numpy()
     O = net_low.wo.detach().numpy()
     return(M_pre, N_pre, corr_pre, I, O, J_pre)
+
 
 def create_inp_out_MWG(trials, Nt, tss, R1_on, SR1_on, fact = 1., just=-1,  perc = 0.1, perc1 = 0.1, delayF = 0, 
                             delay_min = 20, delay_max = 250, align_set = False, inp_size=2, inc_mask_pre = 30, inc_mask_post = 30 ):
@@ -917,7 +948,6 @@ def create_inp_out_MWG(trials, Nt, tss, R1_on, SR1_on, fact = 1., just=-1,  perc
     # Don't have a set cue
     ct3 = np.random.rand(trials)<perc1
     
-    
     rnd = np.zeros(trials)
     if SR1_on>0:
         rnd = np.random.randint(-SR1_on, SR1_on, trials) #random deviation at Ready onset
@@ -972,7 +1002,6 @@ def create_inp_out_MWG(trials, Nt, tss, R1_on, SR1_on, fact = 1., just=-1,  perc
                 
             maskt[itr,:,0] = (time>1+fixT-inc_mask_pre-rnd[itr])*(time<redset+fixT+1+inc_mask_post-rnd[itr])
             
-            
         if ct2[itr]==True:
             s_inp_R[itr,:] = 0.
             s_inp_S1[itr,:] = 0.
@@ -992,8 +1021,7 @@ def create_inp_out_MWG(trials, Nt, tss, R1_on, SR1_on, fact = 1., just=-1,  perc
         inputt[:,:,0] += s_inp_R
         inputt[:,:,1] +=   s_inp_S1
         inputt[:,:,2] +=   s_inp_S2        
-        
-        
+
     dtype = torch.FloatTensor   
     inputt = torch.from_numpy(inputt).type(dtype)
     outputt = torch.from_numpy(outputt).type(dtype)
@@ -1041,7 +1069,6 @@ def create_inp_out_MWG2(trials, Nt, tss, tss2, R1_on, SR1_on, fact = 1., just=-1
     
     strt = -0.5                     # Initial readout value
 
-
     inputt  = np.zeros(( trials, Nt, inp_size))
     outputt = strt*np.ones((trials, Nt, 1))
     maskt   = np.zeros((trials, Nt, 1))
@@ -1052,8 +1079,6 @@ def create_inp_out_MWG2(trials, Nt, tss, tss2, R1_on, SR1_on, fact = 1., just=-1
     s_inp_S1 =  np.zeros((trials, Nt))  
     s_inp_S2 =  np.zeros((trials, Nt))
     s_inp_S3 =  np.zeros((trials, Nt))
-    
-    
     
     if delayF==0:
         delayF = np.round(np.mean((delay_min, delay_max)))
@@ -1073,7 +1098,6 @@ def create_inp_out_MWG2(trials, Nt, tss, tss2, R1_on, SR1_on, fact = 1., just=-1
     
     # Don't have a set cue
     ct3 = np.random.rand(trials)<perc1
-    
     
     rnd = np.zeros(trials)
     if SR1_on>0:
@@ -1144,7 +1168,6 @@ def create_inp_out_MWG2(trials, Nt, tss, tss2, R1_on, SR1_on, fact = 1., just=-1
                 
             maskt[itr,:,0] = (time>1+fixT-inc_mask-rnd[itr])*(time<redset+fixT+1+inc_mask-rnd[itr])
             
-            
     if inp_size==2:                
         inputt[:,:,0] += s_inp_R
         inputt[:,:,0] +=   s_inp_S1
@@ -1154,9 +1177,6 @@ def create_inp_out_MWG2(trials, Nt, tss, tss2, R1_on, SR1_on, fact = 1., just=-1
         inputt[:,:,1] +=   s_inp_S1
         inputt[:,:,2] +=   s_inp_S2   
         inputt[:,:,3] +=   s_inp_S3   
-            
-   
-        
         
     dtype = torch.FloatTensor   
     inputt = torch.from_numpy(inputt).type(dtype)
@@ -1164,7 +1184,6 @@ def create_inp_out_MWG2(trials, Nt, tss, tss2, R1_on, SR1_on, fact = 1., just=-1
     maskt = torch.from_numpy(maskt).type(dtype)
     
     return(inputt, outputt, maskt, ct, ct2, ct3, ct_ctxt)
-
 
 
 def create_inp_out_MWGLearn( Nt, tss, sss, R1_on, SR1_on, fact = 1., just=-1,  perc = 0.1, perc1 = 0.1, delayF = 0, 
@@ -1217,8 +1236,6 @@ def create_inp_out_MWGLearn( Nt, tss, sss, R1_on, SR1_on, fact = 1., just=-1,  p
     s_inp_S2 =  np.zeros((trials, Nt))
     s_inp_S3 =  np.zeros((trials, Nt))
     
-    
-    
     if delayF==0:
         delayF = np.round(np.mean((delay_min, delay_max)))
     
@@ -1237,7 +1254,6 @@ def create_inp_out_MWGLearn( Nt, tss, sss, R1_on, SR1_on, fact = 1., just=-1,  p
     
     # Don't have a set cue
     ct3 = np.random.rand(trials)<perc1
-    
     
     rnd = np.zeros(trials)
     if SR1_on>0:
@@ -1264,7 +1280,6 @@ def create_inp_out_MWGLearn( Nt, tss, sss, R1_on, SR1_on, fact = 1., just=-1,  p
             #Create Set
             s_inp_S2[itr, time>R1_on+rnd[itr]+redset_comp+delay] = 10.
             s_inp_S2[itr, time>1+R1_on+rnd[itr]+redset_comp+delay] = 0.
-          
             
             # Create output
             if sum(maskt[itr,:,0]):
@@ -1289,7 +1304,6 @@ def create_inp_out_MWGLearn( Nt, tss, sss, R1_on, SR1_on, fact = 1., just=-1,  p
             s_inp_S1[itr, time>fixT-delayF-rnd[itr]] = 10.
             s_inp_S1[itr, time>1+fixT-delayF-rnd[itr]] = 0.
             
-            
             s_inp_S2[itr, time>fixT-rnd[itr]] = 10.
             s_inp_S2[itr, time>1+fixT-rnd[itr]] = 0.
             
@@ -1298,7 +1312,6 @@ def create_inp_out_MWGLearn( Nt, tss, sss, R1_on, SR1_on, fact = 1., just=-1,  p
                 outputt[itr, mask_aft==1,0] = np.linspace(-strt, -strt, int(sum(mask_aft)), endpoint=True) 
                 
             maskt[itr,:,0] = (time>1+fixT-inc_mask-rnd[itr])*(time<redset+fixT+1+inc_mask-rnd[itr])
-            
             
     if inp_size==2:                
         inputt[:,:,0] += s_inp_R
@@ -1309,9 +1322,6 @@ def create_inp_out_MWGLearn( Nt, tss, sss, R1_on, SR1_on, fact = 1., just=-1,  p
         inputt[:,:,1] +=   s_inp_S1
         inputt[:,:,2] +=   s_inp_S2   
         inputt[:,:,3] +=   s_inp_S3   
-            
-   
-        
         
     dtype = torch.FloatTensor   
     inputt = torch.from_numpy(inputt).type(dtype)
@@ -1319,7 +1329,6 @@ def create_inp_out_MWGLearn( Nt, tss, sss, R1_on, SR1_on, fact = 1., just=-1,  p
     maskt = torch.from_numpy(maskt).type(dtype)
     
     return(inputt, outputt, maskt, ct, ct2, ct3, ct_ctxt)
-
 
 
 def create_inp_out_MWG3(trials, Nt, tss, tss2, R1_on, SR1_on, fact = 1., just=-1,  perc = 0.1, perc1 = 0.1, delayF = 0, 
@@ -1361,7 +1370,6 @@ def create_inp_out_MWG3(trials, Nt, tss, tss2, R1_on, SR1_on, fact = 1., just=-1
     
     strt = -0.5                     # Initial readout value
 
-
     inputt  = np.zeros(( trials, Nt, inp_size))
     outputt = strt*np.ones((trials, Nt, 1))
     maskt   = np.zeros((trials, Nt, 1))
@@ -1372,9 +1380,7 @@ def create_inp_out_MWG3(trials, Nt, tss, tss2, R1_on, SR1_on, fact = 1., just=-1
     s_inp_S1 =  np.zeros((trials, Nt))  
     s_inp_S2 =  np.zeros((trials, Nt))
     s_inp_S3 =  np.zeros((trials, Nt))
-    
-    
-    
+
     if delayF==0:
         delayF = np.round(np.mean((delay_min, delay_max)))
     
@@ -1393,7 +1399,6 @@ def create_inp_out_MWG3(trials, Nt, tss, tss2, R1_on, SR1_on, fact = 1., just=-1
     
     # Don't have a set cue
     ct3 = np.random.rand(trials)<perc1
-    
     
     rnd = np.zeros(trials)
     if SR1_on>0:
@@ -1428,7 +1433,7 @@ def create_inp_out_MWG3(trials, Nt, tss, tss2, R1_on, SR1_on, fact = 1., just=-1
             s_inp_S2[itr, time>1+R1_on+rnd[itr]+redset_comp+delay] = 0.
             
             if rem_prod or rem_meas:
-                inter_point = 1+R1_on+rnd[itr]+redset_comp + np.int(0.5*delay)
+                inter_point = 1+R1_on+rnd[itr]+redset_comp + int(0.5*delay)
                 if rem_prod:
                     s_inp_S3[itr, time>inter_point] = 0.
                 if rem_meas:
@@ -1466,7 +1471,7 @@ def create_inp_out_MWG3(trials, Nt, tss, tss2, R1_on, SR1_on, fact = 1., just=-1
             s_inp_S2[itr, time>1+fixT-rnd[itr]] = 0.
             
             if rem_prod or rem_meas:
-                inter_point = fixT-np.int(0.5*delayF)-rnd[itr]
+                inter_point = fixT-int(0.5*delayF)-rnd[itr]
                 if rem_prod:
                     s_inp_S3[itr, time>inter_point] = 0.
                 if rem_meas:
@@ -1478,7 +1483,6 @@ def create_inp_out_MWG3(trials, Nt, tss, tss2, R1_on, SR1_on, fact = 1., just=-1
                 
             maskt[itr,:,0] = (time>1+fixT-inc_mask-rnd[itr])*(time<redset+fixT+1+inc_mask-rnd[itr])
             
-            
     if inp_size==2:                
         inputt[:,:,0] += s_inp_R
         inputt[:,:,0] +=   s_inp_S1
@@ -1488,16 +1492,15 @@ def create_inp_out_MWG3(trials, Nt, tss, tss2, R1_on, SR1_on, fact = 1., just=-1
         inputt[:,:,1] +=   s_inp_S1
         inputt[:,:,2] +=   s_inp_S2   
         inputt[:,:,3] +=   s_inp_S3   
-            
-   
-        
-        
+  
     dtype = torch.FloatTensor   
     inputt = torch.from_numpy(inputt).type(dtype)
     outputt = torch.from_numpy(outputt).type(dtype)
     maskt = torch.from_numpy(maskt).type(dtype)
     
     return(inputt, outputt, maskt, ct, ct2, ct3, ct_ctxt)
+
+
 def create_inp_out2(trials, Nt, tss, amps, R_on, SR_on, just=-1,  perc = 0.2):
     '''
     Missing
@@ -1514,7 +1517,6 @@ def create_inp_out2(trials, Nt, tss, amps, R_on, SR_on, just=-1,  perc = 0.2):
     r_inp = np.ones((trials, Nt))
     #r2_inp = np.ones((trials, Nt))
     s_inp =  np.zeros((trials, Nt))
-    
     
     if just==-1:   #all types of trials  
         ct = np.random.randint(n_ts, size = trials)
@@ -1565,6 +1567,7 @@ def create_inp_out2(trials, Nt, tss, amps, R_on, SR_on, just=-1,  perc = 0.2):
     
     return(inputt, outputt, maskt, ct, ct2)
 
+
 #%%
 def give_field_CSG(M, N, Iv, amp, k1s, k2s):
     K1s, K2s = np.meshgrid(k1s, k2s)
@@ -1588,79 +1591,128 @@ def give_field_CSG(M, N, Iv, amp, k1s, k2s):
     E = np.sqrt(U**2+V**2)
     return( E, U, V, K1s, K2s)
 
+
 #%%
 def get_field(net_low_all, k1s, k2s, Amp, rank=2, hidden_size=1500):
+    """
+    get_field computes the coarse vector field of the network on a grid 
+    in the plane spanned by the first two connectivity vectors m1 and m2.
+    """
     K1s, K2s = np.meshgrid(k1s, k2s)
+
+    # Decomposes the recurrent connectivity J = m @ n.T via SVD, giving 
+    # orthogonalized connectivity vectors M_pre (columns m1, m2) and the 
+    # reconstructed full connectivity matrix J_pre.
     M_pre, N_pre, corr_pre, I_pre, O_pre, J_pre = get_SVDweights_CSG(net_low_all, rank=rank)
 
+    # Initialize the flow field matrices
     G0 = np.zeros_like(K1s)
     G1 = np.zeros_like(K2s)
-    
+
+    # For every grid point (k1, k2), reconstruct a candidate N-dimensional hidden 
+    # state by assuming activity lies exactly on the plane spanned by m1/m2
     for ik1, k1 in enumerate(k1s):
         for ik2, k2 in enumerate(k2s):
+            # Compute the projections of the flow field onto the connectivity vectors m1 and m2
             m1 = M_pre[:,0]*np.sqrt(hidden_size)
             m2 = M_pre[:,1]*np.sqrt(hidden_size)
+    
+            # Amp*I_pre[0,:] adds the tonic cue-amplitude input for that condition
             x = k1*m1 + k2*m2 + Amp*I_pre[0,:].T
-            dx = -x + J_pre.dot(np.tanh(x)) +Amp*I_pre[0,:].T
+            # Plug x into the network dynamics i.e. the leaky-RNN drift equation
+            dx = -x + J_pre.dot(np.tanh(x)) + Amp*I_pre[0,:].T
+
+            # Project that N-dimensional velocity back down onto m1/m2
             G0[ik1, ik2] = np.mean(m1*dx)/np.mean(m1*m1)
             G1[ik1, ik2] = np.mean(m2*dx)/np.mean(m2*m2)
+
+    # Local speed of the flow field at each grid point, computed as the Euclidean norm of the vector (G0, G1)
     Q = np.sqrt(G0**2+G1**2)
+
     return(G0, G1, Q, m1, m2, I_pre, J_pre)
 
 
 #%%
 def get_manifold(thetas, Q, G0, G1, k1s, k2s, m1, m2, Amp, I_pre, J_pre, dim = 0.02):
+    """
+    get_manifold uses the flow field to locate fixed points and then 
+    re-simulate the real dynamics near the saddles to trace the precise 
+    attracting curve connecting them. 
+    """
     array = np.copy(Q)
     trajs1 = []
     trajs2 = []
     st_fp =[]
     u_fp = []
+
     for rep in range(5):
+        # Find the fixed point by locating the minimum of the speed field Q
         x,y = np.unravel_index(np.argmin(array),array.shape)
         k1p = k1s[x]
         k2p = k2s[y]
 
-            
+        # Estimate the Jacobian of the flow field at the fixed point by finite differences
         Ja = np.zeros((2,2))
         Ja[0,0] = G0[x+1,y]-G0[x-1,y]
         Ja[0,1] = G1[x+1,y]-G1[x-1,y]
         Ja[1,1] = G1[x,y+1]-G1[x,y-1]
         Ja[1,0] = G0[x,y+1]-G0[x,y-1]
+
+        # Compute the eigenvalues and eigenvectors of the Jacobian to assess stability
         lam = np.linalg.eigvals(Ja)
         eh, vh = np.linalg.eig(Ja)
         idx = eh.argsort()[::-1]
         eh = eh[idx]
         vh = vh[:,idx]
+
+        # Mark the region around the fixed point in the speed field array to 
+        # avoid finding the same fixed point again
         array[x-4:x+4,y-4:y+4] = np.max(Q)
+
         if np.max(lam)>0:
+            # Append unstable fixed points if max(lam) > 0
             u_fp.append(np.array((k2p, k1p)))
         else:
+            # Append stable fixed points if max(lam) <= 0
             st_fp.append(np.array((k2p, k1p)))
+    
         if np.max(lam)>0 and np.min(lam)<0:
-            
+            # If the fixed point is a saddle (one eigenvalue positive, one negative), 
+            # simulate trajectories along the stable and unstable manifolds
             if np.real(eh[0])>0:
                 iXX = 0
             else:
                 iXX = 1
-                print('hey')
+    
             time = np.arange(0, 40, 0.1)
             dt = time[1]-time[0]
             r1 = np.zeros_like(time)
             r2 = np.zeros_like(time)
             r1_ = np.zeros_like(time)
             r2_ = np.zeros_like(time)
-            
+
+            # Nudge the initial condition slightly along the stable and unstable 
+            # eigenvectors. The initial condition is constructed as a linear 
+            # combination of the connectivity vectors m1 and m2.
+
+            # (r1, r2) for +
             x = (k1p+dim*vh[0,iXX])*m1 + (k2p+dim*vh[1,iXX])*m2 + Amp*I_pre[0,:].T
             r1[0] = np.mean(m1*x)/np.mean(m1*m1)
             r2[0] = np.mean(m2*x)/np.mean(m2*m2)
+
+            # Integrate the dynamics forward in time to trace out the trajectory along the manifold
             for it, ti in enumerate(time[:-1]):
                 dx = -x + J_pre.dot(np.tanh(x)) +Amp*I_pre[0,:].T
                 x = x+dt*dx
                 r1[it+1] = np.mean(m1*x)/np.mean(m1*m1)
                 r2[it+1] = np.mean(m2*x)/np.mean(m2*m2)
+
+            # (r1_, r2_) for -
             x = (k1p-dim*vh[0,iXX])*m1 + (k2p-dim*vh[1,iXX])*m2 + Amp*I_pre[0,:].T
             r1_[0] = np.mean(m1*x)/np.mean(m1*m1)
             r2_[0] = np.mean(m2*x)/np.mean(m2*m2)
+
+            # Again, integrate the dynamics forward in time to trace out the trajectory along the manifold
             for it, ti in enumerate(time[:-1]):
                 dx = -x + J_pre.dot(np.tanh(x)) +Amp*I_pre[0,:].T
                 x = x+dt*dx
@@ -1672,14 +1724,18 @@ def get_manifold(thetas, Q, G0, G1, k1s, k2s, m1, m2, Amp, I_pre, J_pre, dim = 0
     
     trajs1 = np.array(trajs1)
     trajs2 = np.array(trajs2)
-    
+
+    # Convert to polar coordinates
     th_M = np.arctan2(trajs2,trajs1)
     R_M  = np.sqrt(trajs2**2+trajs1**2)
     
     Rth = np.zeros_like(thetas)
     Qs = np.zeros_like(thetas)
     GGms = np.zeros((len(thetas), 2))
-    
+
+    # For each angle theta, find the nearest point on the manifold and compute 
+    # the corresponding radius (Rth) and the speed (Qs) along that direction. 
+    # This allows us to characterize the geometry of the manifold in polar coordinates.
     for it, th in enumerate(thetas):
         iT  = np.argmin(np.abs(th-th_M))
         Rth[it] = R_M[iT]
@@ -1688,7 +1744,9 @@ def get_manifold(thetas, Q, G0, G1, k1s, k2s, m1, m2, Amp, I_pre, J_pre, dim = 0
         GGms[it,0] = np.mean(m1*dx)/np.mean(m1*m1)
         GGms[it,1] = np.mean(m2*dx)/np.mean(m2*m2)
         sign = np.sign(np.sin(th)*GGms[it,0]-np.cos(th)*GGms[it,1])
+        # Compute the signed flow speed along the fitted ring
         Qs[it] = sign*np.sqrt(GGms[it,0]**2+GGms[it,1]**2)
+
     return(Qs, Rth, trajs1, trajs2, st_fp, u_fp)
 
 
@@ -1703,7 +1761,6 @@ def plot_output_MWG2(net_low_all, net_low_fr, tss2, dt, CLL, time, rank=3, give_
         fig_size =  [fig_width,fig_height]
         fig = plt.figure(figsize=fig_size)
         ax = fig.add_subplot(111)
-        
 
     factor=1
     R_on = 100
@@ -1711,7 +1768,6 @@ def plot_output_MWG2(net_low_all, net_low_fr, tss2, dt, CLL, time, rank=3, give_
     trials = 10
 
     T0=4100
-    
     for xx in range(len(tss2)):
         input_train, output_train, mask_train, ct_train, ct2_train, ct3_train = create_inp_out_MWG(trials, Nt, tss2//dt, 
                                                                 R_on+dela, 1, just=xx, perc=0., perc1=0., fact=factor, align_set = True, delayF = dela, inp_size=3)
@@ -1726,7 +1782,6 @@ def plot_output_MWG2(net_low_all, net_low_fr, tss2, dt, CLL, time, rank=3, give_
         else:
             ax.plot(time*dt-T0, avg_outp0, '--', color=CLL[xx,:],  lw=2)
                     
-            
     for xx in range(len(tss2)):
         input_train, output_train, mask_train, ct_train, ct2_train, ct3_train = create_inp_out_MWG(trials, Nt, tss2//dt, 
                                                                 R_on+dela, 1, just=xx, perc=0., perc1=0., fact=factor, align_set = True, delayF = dela, inp_size=3)
@@ -1743,8 +1798,7 @@ def plot_output_MWG2(net_low_all, net_low_fr, tss2, dt, CLL, time, rank=3, give_
         else:
             ax.plot(time*dt-T0, avg_outp0, color=CLL[xx,:], lw=2) 
             
-        ax.plot(time*dt-T0, output_train.detach().numpy()[0,:,0], '.', color='k', alpha=0.5) #This is for the mask (in all four)
-             
+        ax.plot(time*dt-T0, output_train.detach().numpy()[0,:,0], '.', color='k', alpha=0.5) #This is for the mask (in all four)  
 
     if plot:                    
         ax.spines['top'].set_visible(False)
@@ -1758,9 +1812,9 @@ def plot_output_MWG2(net_low_all, net_low_fr, tss2, dt, CLL, time, rank=3, give_
         plt.yticks([-0.5, 0, 0.5])
         plt.xticks([0, 500, 1000, 1500])
         ax.set_xticklabels(['0', '', '1000', ''])
-
         
     return(fig, ax)
+
 
 #%%
 def give_traj_MWG2(net_low_all, net_low_fr, tss2, dt, CLL, time, rank=3, give_trajs=False, plot=True,
@@ -1784,7 +1838,6 @@ def give_traj_MWG2(net_low_all, net_low_fr, tss2, dt, CLL, time, rank=3, give_tr
             Traj_fr = np.vstack((Traj_fr, traj.detach().numpy()))
             #print(np.shape(Traj_fr))
                 
-            
     for xx in range(len(tss2)):
         input_train, output_train, mask_train, ct_train, ct2_train, ct3_train = create_inp_out_MWG(trials, Nt, tss2//dt, 
                                                                 R_on+dela, 1, just=xx, perc=0., perc1=0., fact=factor, align_set = True, delayF = dela, inp_size=3)
@@ -1793,4 +1846,5 @@ def give_traj_MWG2(net_low_all, net_low_fr, tss2, dt, CLL, time, rank=3, give_tr
             Traj = traj.detach().numpy()
         else:
             Traj = np.vstack((Traj, traj.detach().numpy()))
+
     return(Traj, Traj_fr)

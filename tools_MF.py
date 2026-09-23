@@ -650,7 +650,7 @@ def rotate_flow(Enet, theta,  Dt):
     Dt_ = Dt*np.pi/180
     Enet2= np.zeros_like(Enet)
 
-    iDt = np.int(Dt_/(theta[1]-theta[0]))
+    iDt = int(Dt_/(theta[1]-theta[0]))
     Enet2 = np.copy(Enet)
     Enet2 = np.roll(Enet2, iDt, axis=0)
     return(Enet2)

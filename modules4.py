@@ -201,7 +201,6 @@ class FullRankRNN(nn.Module):
                  train_wi=False, train_wo=False, train_wrec=True, train_h0=False,
                  wi_init=None, wo_init=None, wrec_init=None, si_init=None, so_init=None, h0_init=None):
         """
-
         :param input_size: int
         :param hidden_size: int
         :param output_size: int
